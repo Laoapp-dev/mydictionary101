@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background (no pre-rounded corners; OS applies its own mask shape) -->
+  <rect width="512" height="512" fill="url(#bgGrad)"/>
+
+  <!-- Content scaled & centered within the ~80% maskable safe zone -->
+  <g transform="translate(256 256) scale(0.72) translate(-256 -256)">
+    <!-- Open Book Graphic -->
+    <g>
+      <path d="M 128 160 C 180 148, 230 162, 256 180 L 256 360 C 230 342, 180 328, 128 340 Z" fill="#FFFFFF"/>
+      <path d="M 384 160 C 332 148, 282 162, 256 180 L 256 360 C 282 342, 332 328, 384 340 Z" fill="#F1F5F9"/>
+      <path d="M 152 200 L 232 200 M 152 236 L 220 236 M 152 272 L 232 272" stroke="#6366F1" stroke-width="8" stroke-linecap="round"/>
+      <path d="M 280 200 L 360 200 M 292 236 L 360 236 M 280 272 L 360 272" stroke="#818CF8" stroke-width="8" stroke-linecap="round"/>
+    </g>
+
+    <!-- Sparkle / Star Icon Top Right -->
+    <g transform="translate(350, 110)">
+      <path d="M 24 0 L 30 16 L 48 24 L 30 32 L 24 48 L 18 32 L 0 24 L 18 16 Z" fill="url(#accentGrad)"/>
+    </g>
+  </g>
+</svg>

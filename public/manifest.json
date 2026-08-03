@@ -5,27 +5,58 @@
   "description": "Smart Multilingual Dictionary, Vocabulary Tracker & Practice Exercises for Thai and English learners.",
   "icons": [
     {
+      "src": "./favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
       "src": "./icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-384.png",
+      "type": "image/png",
+      "sizes": "384x384",
+      "purpose": "any"
     },
     {
       "src": "./icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "./icon.png",
+      "src": "./icon-192-maskable.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon-512-maskable.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "./favicon.svg",
-      "type": "image/svg+xml",
-      "sizes": "512x512"
+      "purpose": "maskable"
     }
   ],
   "start_url": "./",
@@ -41,14 +72,14 @@
       "short_name": "Search",
       "description": "Quickly search words, definitions, and translations",
       "url": "./?tab=search",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Practice Exercises",
       "short_name": "Practice",
       "description": "Flashcards and practice exercises",
       "url": "./?tab=practice",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

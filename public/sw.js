@@ -1,12 +1,23 @@
 // Service Worker for MyDictionary101 PWA Caching
-const CACHE_NAME = 'mydictionary101-v2';
+const CACHE_NAME = 'mydictionary101-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  './favicon.svg',
+  './favicon.ico',
+  './favicon.png',
+  './icon-72.png',
+  './icon-96.png',
+  './icon-144.png',
   './icon-192.png',
+  './icon-384.png',
   './icon-512.png',
-  './favicon.svg'
+  './icon-192-maskable.png',
+  './icon-512-maskable.png',
+  './apple-touch-icon.png',
+  './apple-touch-icon-152.png',
+  './apple-touch-icon-167.png'
 ];
 
 self.addEventListener('install', (event) => {
