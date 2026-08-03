@@ -12,7 +12,7 @@ import { localDb } from './lib/indexedDb';
 import { INITIAL_OFFLINE_WORDS } from './data/offlinePacks';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'search' | 'practice' | 'dashboard' | 'settings'>('search');
+  const [activeTab, setActiveTab] = useState<'search' | 'daily' | 'practice' | 'dashboard' | 'settings'>('search');
   
   // PWA Install Prompt State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -545,28 +545,63 @@ export default function App() {
               onSelectHistory={handleSearchWord}
             />
 
-            {/* Word of the Day Banner */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Main Column: Searched Word Card */}
+              <div className="lg:col-span-8 xl:col-span-8 space-y-6">
+                {isLoadingWord ? (
+                  <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-white dark:bg-[#1E293B] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl">
+                    <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">Searching definitions & translations...</p>
+                  </div>
+                ) : wordEntry ? (
+                  <WordCard
+                    entry={wordEntry}
+                    userProgress={currentWordUserProgress}
+                    onToggleBookmark={handleToggleBookmark}
+                    onSelectWord={handleSearchWord}
+                  />
+                ) : null}
+              </div>
+
+              {/* Right Column: Sleek Compact Vertical Card for Word of the Day on Desktop */}
+              <div className="hidden lg:block lg:col-span-4 xl:col-span-4 space-y-6 max-w-sm ml-auto w-full">
+                <WordOfTheDay
+                  offlineWords={INITIAL_OFFLINE_WORDS}
+                  userProgressList={userProgressList}
+                  onToggleBookmark={handleToggleBookmark}
+                  onSelectWord={(word) => {
+                    handleSearchWord(word);
+                    setActiveTab('search');
+                  }}
+                  onNavigateToPractice={() => setActiveTab('practice')}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: WORD OF THE DAY (Dedicated View for Mobile & Nav Menu) */}
+        {activeTab === 'daily' && (
+          <div className="max-w-md mx-auto space-y-6 py-2 animate-in fade-in duration-200">
+            <div className="text-center space-y-1 mb-2">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center justify-center space-x-2">
+                <span>Daily Vocabulary Spotlight</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Expand your lexicon daily with curated insights & Thai translations
+              </p>
+            </div>
+
             <WordOfTheDay
               offlineWords={INITIAL_OFFLINE_WORDS}
               userProgressList={userProgressList}
               onToggleBookmark={handleToggleBookmark}
-              onSelectWord={handleSearchWord}
+              onSelectWord={(word) => {
+                setActiveTab('search');
+                handleSearchWord(word);
+              }}
               onNavigateToPractice={() => setActiveTab('practice')}
             />
-
-            {isLoadingWord ? (
-              <div className="flex flex-col items-center justify-center py-16 space-y-3">
-                <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                <p className="text-sm font-semibold text-zinc-500">Searching definitions & translations...</p>
-              </div>
-            ) : wordEntry ? (
-              <WordCard
-                entry={wordEntry}
-                userProgress={currentWordUserProgress}
-                onToggleBookmark={handleToggleBookmark}
-                onSelectWord={handleSearchWord}
-              />
-            ) : null}
           </div>
         )}
 

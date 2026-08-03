@@ -93,185 +93,172 @@ export const WordOfTheDay: React.FC<WordOfTheDayProps> = ({
   const firstDefinition = firstMeaning?.definitions?.[0];
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-4 relative rounded-3xl bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden transition-all duration-300">
+    <div className="w-full relative rounded-2xl bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden transition-all duration-300 flex flex-col">
       
       {/* Decorative Glow Element */}
-      <div className="absolute -top-12 -right-12 w-44 h-44 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/10 dark:bg-amber-400/15 rounded-full blur-xl pointer-events-none" />
 
-      {/* Top Banner Header Section */}
-      <div className="p-6 sm:p-8 bg-gradient-to-br from-indigo-900/10 via-sky-800/5 to-amber-900/10 dark:from-indigo-950/40 dark:via-slate-900/60 dark:to-amber-950/30 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-2xl bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300 flex items-center justify-center font-bold shadow-sm">
-              <Sparkles className="w-5 h-5 fill-amber-400 text-amber-500" />
+      {/* Vertical Card Header Section */}
+      <div className="px-4 py-3 bg-gradient-to-b from-indigo-900/10 via-sky-800/5 to-amber-900/10 dark:from-indigo-950/40 dark:via-slate-900/60 dark:to-amber-950/30 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300 flex items-center justify-center font-bold shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+              <div className="flex items-center space-x-1.5">
+                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   Word of the Day
                 </span>
                 {shuffleIndex !== null && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/30">
-                    Explored
+                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/30">
+                    Shuffled
                   </span>
                 )}
               </div>
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1.5 mt-0.5">
-                <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+              <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1">
+                <Calendar className="w-2.5 h-2.5 text-indigo-400" />
                 <span>{dateFormatted}</span>
               </p>
             </div>
           </div>
 
-          {/* CEFR Level Tag & Shuffle Button */}
-          <div className="flex items-center space-x-2">
-            {wordEntry.lexicalInsights?.cefrLevel && (
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-600 text-white shadow-sm shadow-indigo-600/20">
-                Level {wordEntry.lexicalInsights.cefrLevel}
-              </span>
-            )}
-
-            <button
-              onClick={handleDiscoverAnother}
-              className="px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all text-xs font-bold border border-slate-200 dark:border-slate-700 flex items-center space-x-1.5 shadow-sm"
-              title="Discover another word"
-            >
-              <Shuffle className="w-3.5 h-3.5 text-indigo-500" />
-              <span>Shuffle</span>
-            </button>
-          </div>
+          <button
+            onClick={handleDiscoverAnother}
+            className="px-2 py-1 rounded-lg bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all border border-slate-200 dark:border-slate-700 flex items-center space-x-1 shadow-sm text-[11px] font-bold"
+            title="Shuffle another word"
+          >
+            <Shuffle className="w-3 h-3 text-indigo-500" />
+            <span>Random</span>
+          </button>
         </div>
       </div>
 
-      {/* Content Body Section */}
-      <div className="p-6 sm:p-8 space-y-6">
+      {/* Card Main Body */}
+      <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
         
-        {/* Word & Audio Speaker Row */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-3">
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white capitalize tracking-tight">
-                {wordEntry.word}
-              </h2>
-
-              <button
-                onClick={() => handlePlayAudio(wordEntry.word)}
-                className={`p-2.5 rounded-2xl transition-all ${
-                  isPlayingAudio
-                    ? 'bg-indigo-600 text-white scale-110 shadow-lg shadow-indigo-500/30'
-                    : 'bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400'
-                }`}
-                title="Listen to pronunciation"
-              >
-                <Volume2 className="w-5 h-5" />
-              </button>
-            </div>
-
-            {wordEntry.phonetic && (
-              <p className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 mt-1">
-                {wordEntry.phonetic}
-              </p>
+        <div className="space-y-2.5">
+          {/* CEFR Level Tag & Bookmark Button */}
+          <div className="flex items-center justify-between">
+            {wordEntry.lexicalInsights?.cefrLevel ? (
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-600 text-white tracking-wide shadow-sm">
+                CEFR {wordEntry.lexicalInsights.cefrLevel}
+              </span>
+            ) : (
+              <span />
             )}
+
+            <button
+              onClick={() => onToggleBookmark(wordEntry)}
+              className={`p-1.5 rounded-lg border transition-all ${
+                isBookmarked
+                  ? 'bg-amber-500/10 border-amber-500/40 text-amber-500 dark:text-amber-400'
+                  : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-800 dark:hover:text-white'
+              }`}
+              title={isBookmarked ? 'Bookmarked' : 'Save word'}
+            >
+              {isBookmarked ? (
+                <BookmarkCheck className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+              ) : (
+                <Bookmark className="w-3.5 h-3.5" />
+              )}
+            </button>
           </div>
 
-          {/* Bookmark Button */}
-          <button
-            onClick={() => onToggleBookmark(wordEntry)}
-            className={`p-3 rounded-2xl border transition-all ${
-              isBookmarked
-                ? 'bg-amber-500/10 border-amber-500/40 text-amber-500 dark:text-amber-400'
-                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-            title={isBookmarked ? 'Bookmarked' : 'Save word'}
-          >
-            {isBookmarked ? (
-              <BookmarkCheck className="w-5 h-5 fill-amber-500 text-amber-500" />
-            ) : (
-              <Bookmark className="w-5 h-5" />
-            )}
-          </button>
-        </div>
+          {/* Word Heading & Audio */}
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white capitalize tracking-tight">
+                {wordEntry.word}
+              </h3>
+              {wordEntry.phonetic && (
+                <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                  {wordEntry.phonetic}
+                </p>
+              )}
+            </div>
 
-        {/* Main Definition & Usage Example */}
-        {firstDefinition && (
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
+            <button
+              onClick={() => handlePlayAudio(wordEntry.word)}
+              className={`p-2 rounded-lg transition-all ${
+                isPlayingAudio
+                  ? 'bg-indigo-600 text-white scale-105 shadow-md shadow-indigo-500/30'
+                  : 'bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400'
+              }`}
+              title="Listen to pronunciation"
+            >
+              <Volume2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Part of Speech & Definition */}
+          {firstDefinition && (
+            <div className="space-y-1 pt-0.5">
               {firstMeaning?.partOfSpeech && (
-                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700">
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700 inline-block">
                   {firstMeaning.partOfSpeech}
                 </span>
               )}
-            </div>
 
-            <p className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-relaxed">
-              {firstDefinition.definition}
-            </p>
+              <p className="text-xs font-medium text-slate-700 dark:text-slate-200 leading-snug line-clamp-3">
+                {firstDefinition.definition}
+              </p>
 
-            {firstDefinition.example && (
-              <div className="bg-slate-50 dark:bg-slate-900/60 p-3.5 rounded-2xl border-l-4 border-indigo-500 my-1.5 space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block">
-                  Example Sentence
-                </span>
-                <p className="text-sm italic font-medium text-slate-800 dark:text-slate-200">
+              {firstDefinition.example && (
+                <div className="bg-slate-50 dark:bg-slate-900/60 p-2 rounded-lg border-l-2 border-indigo-500 text-[11px] italic text-slate-600 dark:text-slate-300">
                   "{firstDefinition.example}"
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Memory Tip or Lexical Insight */}
-        {wordEntry.lexicalInsights?.memoryTip && (
-          <div className="p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 flex items-start space-x-3">
-            <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs font-extrabold text-amber-800 dark:text-amber-200 uppercase tracking-wide">
-                Memory Tip
-              </p>
-              <p className="text-xs sm:text-sm text-amber-900 dark:text-amber-100 font-medium mt-0.5">
-                {wordEntry.lexicalInsights.memoryTip}
-              </p>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Thai Translation Preview */}
-        {wordEntry.translations?.thai && (
-          <div className="w-full">
-            <div className="p-4 rounded-2xl bg-amber-500/5 dark:bg-slate-900/80 border border-amber-500/20 dark:border-slate-800 space-y-1">
-              <div className="flex items-center space-x-1.5 text-slate-400 font-bold text-xs">
+          {/* Thai Translation */}
+          {wordEntry.translations?.thai && (
+            <div className="p-2.5 rounded-lg bg-amber-500/5 dark:bg-slate-900/70 border border-amber-500/20 dark:border-slate-800 space-y-0.5">
+              <div className="text-[9px] font-bold text-slate-400 flex items-center space-x-1">
                 <span>🇹🇭</span>
-                <span>Thai Translation (ภาษาไทย)</span>
+                <span>Thai Translation</span>
               </div>
-              <p className="text-lg font-extrabold text-amber-900 dark:text-amber-300 font-thai">
+              <p className="text-xs sm:text-sm font-extrabold text-amber-900 dark:text-amber-300 font-thai">
                 {wordEntry.translations.thai.translation}
               </p>
               {wordEntry.translations.thai.phonetic && (
-                <p className="text-xs text-amber-700 dark:text-amber-400 font-mono">
-                  Pronunciation: ({wordEntry.translations.thai.phonetic})
+                <p className="text-[10px] text-amber-700 dark:text-amber-400 font-mono">
+                  ({wordEntry.translations.thai.phonetic})
                 </p>
               )}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Action Footer Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          {/* Memory Tip */}
+          {wordEntry.lexicalInsights?.memoryTip && (
+            <div className="p-2 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 flex items-start space-x-1.5">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <p className="text-[11px] text-amber-900 dark:text-amber-100 font-medium leading-tight">
+                <strong className="font-extrabold">Tip: </strong>
+                {wordEntry.lexicalInsights.memoryTip}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Action Button */}
+        <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
           <button
             onClick={() => onSelectWord(wordEntry.word)}
-            className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs transition-all shadow-md shadow-indigo-600/20 flex items-center space-x-2"
+            className="w-full py-2 px-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center space-x-1"
           >
-            <BookOpen className="w-4 h-4" />
-            <span>Study Full Word Details</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>View Full Word Details</span>
+            <ArrowRight className="w-3 h-3" />
           </button>
 
           {onNavigateToPractice && (
             <button
               onClick={onNavigateToPractice}
-              className="px-4 py-2.5 rounded-2xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold text-xs transition-all flex items-center space-x-1.5"
+              className="w-full py-1.5 px-2.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold text-[11px] transition-all flex items-center justify-center space-x-1"
             >
-              <Zap className="w-4 h-4" />
+              <Zap className="w-3 h-3" />
               <span>Practice Exercises</span>
             </button>
           )}

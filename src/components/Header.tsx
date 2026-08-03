@@ -7,12 +7,13 @@ import {
   Moon,
   Laptop,
   Search,
-  Download
+  Download,
+  Sparkles
 } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'search' | 'practice' | 'dashboard' | 'settings';
-  setActiveTab: (tab: 'search' | 'practice' | 'dashboard' | 'settings') => void;
+  activeTab: 'search' | 'daily' | 'practice' | 'dashboard' | 'settings';
+  setActiveTab: (tab: 'search' | 'daily' | 'practice' | 'dashboard' | 'settings') => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
   themeMode?: 'light' | 'dark' | 'system';
@@ -67,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('search')}>
             <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/20 border border-indigo-500/30">
               <img
-                src={`${import.meta.env.BASE_URL}favicon.svg`}
+                src="/favicon.svg"
                 alt="MyDictionary101 Logo"
                 className="w-full h-full object-cover p-1 bg-indigo-900"
               />
@@ -91,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
           <nav className="hidden md:flex items-center space-x-1">
             <button
               onClick={() => setActiveTab('search')}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeTab === 'search'
                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-500/30'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -102,8 +103,20 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('daily')}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                activeTab === 'daily'
+                  ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-500/30'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>Word of Day</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('practice')}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeTab === 'practice'
                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-500/30'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -120,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeTab === 'dashboard'
                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-500/30'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -132,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeTab === 'settings'
                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-500/30'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -217,7 +230,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#0F172A]/95 border-t border-slate-200 dark:border-slate-800 backdrop-blur-lg px-2 py-2">
-        <div className="grid grid-cols-4 gap-1 text-center">
+        <div className="grid grid-cols-5 gap-0.5 text-center">
           <button
             onClick={() => setActiveTab('search')}
             className={`flex flex-col items-center py-1 rounded-lg text-xs transition-colors ${
@@ -231,6 +244,18 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('daily')}
+            className={`flex flex-col items-center py-1 rounded-lg text-xs transition-colors ${
+              activeTab === 'daily'
+                ? 'text-indigo-600 dark:text-indigo-400 font-bold'
+                : 'text-slate-500 dark:text-slate-400'
+            }`}
+          >
+            <Sparkles className="w-5 h-5 mb-0.5 text-amber-500 fill-amber-400" />
+            <span>Daily</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('practice')}
             className={`flex flex-col items-center py-1 rounded-lg text-xs transition-colors relative ${
               activeTab === 'practice'
@@ -241,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Target className="w-5 h-5 mb-0.5" />
             <span>Practice</span>
             {bookmarkedCount > 0 && (
-              <span className="absolute top-0 right-3 w-4 h-4 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center">
+              <span className="absolute top-0 right-2 w-3.5 h-3.5 rounded-full bg-indigo-600 text-white text-[9px] font-bold flex items-center justify-center">
                 {bookmarkedCount}
               </span>
             )}
