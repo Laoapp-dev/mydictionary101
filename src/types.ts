@@ -26,6 +26,7 @@ export interface LanguageTranslation {
 
 export interface WordTranslations {
   thai?: LanguageTranslation;
+  lao?: LanguageTranslation;
 }
 
 export interface LexicalInsights {
@@ -60,6 +61,8 @@ export interface WordEntry {
   };
   audioUrl?: string;
   origin?: string;
+  category?: string;
+  difficulty?: 'Easy' | 'Medium' | 'Hard';
 }
 
 export type MasteryLevel = 'Learning' | 'Reviewing' | 'Mastered';

@@ -10,6 +10,7 @@ import { SettingsView } from './components/SettingsView';
 import { WordEntry, UserWordProgress, StudyStats } from './types';
 import { localDb } from './lib/indexedDb';
 import { INITIAL_OFFLINE_WORDS } from './data/offlinePacks';
+import { parseWordCsv, parseWordJson } from './utils/wordImport';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'search' | 'daily' | 'practice' | 'dashboard' | 'settings'>('search');
@@ -491,6 +492,59 @@ export default function App() {
     }
   };
 
+  // Import full vocabulary content (word, definition, partOfSpeech, cefrLevel,
+  // exampleSentence, synonym, antonym, category, difficulty, laoTranslation,
+  // thaiTranslation) from the Word Content template, in CSV or JSON format.
+  const handleImportWordContent = async (
+    content: string,
+    fileType: 'csv' | 'json'
+  ): Promise<{ success: boolean; count: number; errors: string[] }> => {
+    const { entries, errors } = fileType === 'csv' ? parseWordCsv(content) : parseWordJson(content);
+
+    if (entries.length === 0) {
+      return { success: false, count: 0, errors: errors.length ? errors : ['No valid rows found.'] };
+    }
+
+    // Persist full word entries so they're searchable & usable offline.
+    await localDb.saveBatchWords(entries);
+    setWordMap((prev) => {
+      const next = new Map(prev);
+      for (const e of entries) next.set(e.word.toLowerCase(), e);
+      return next;
+    });
+
+    // Also add them to the user's practice list so they immediately show up
+    // on the practice / flip cards.
+    const now = new Date().toISOString();
+    const newProgressItems: UserWordProgress[] = entries.map((e) => ({
+      word: e.word,
+      masteryScore: 20,
+      masteryLevel: 'Learning',
+      lastReviewed: now,
+      nextReviewDate: now,
+      reviewCount: 0,
+      correctCount: 0,
+      incorrectCount: 0,
+      tags: ['imported', e.category].filter(Boolean) as string[],
+      isBookmarked: true,
+      addedAt: now,
+    }));
+
+    setUserProgressList((prev) => {
+      const map = new Map<string, UserWordProgress>();
+      for (const item of prev) map.set(item.word.toLowerCase(), item);
+      for (const item of newProgressItems) {
+        if (!map.has(item.word.toLowerCase())) map.set(item.word.toLowerCase(), item);
+      }
+      return Array.from(map.values());
+    });
+    for (const item of newProgressItems) {
+      await localDb.saveWordProgress(item);
+    }
+
+    return { success: true, count: entries.length, errors };
+  };
+
   const handleFactoryReset = async () => {
     await localDb.clearAllData();
     setUserProgressList([]);
@@ -641,6 +695,7 @@ export default function App() {
             onSetThemeMode={setThemeMode}
             deferredPrompt={deferredPrompt}
             onInstallPwa={handleInstallPwa}
+            onImportWordContent={handleImportWordContent}
             onImportJson={(jsonStr) => {
               try {
                 const parsed = JSON.parse(jsonStr);

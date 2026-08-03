@@ -14,9 +14,12 @@ import {
   XCircle,
   HardDrive,
   ShieldCheck,
-  Database
+  Database,
+  Library,
+  Table
 } from 'lucide-react';
 import { UserWordProgress, StudyStats } from '../types';
+import { WORD_TEMPLATE_HEADERS } from '../utils/wordImport';
 
 interface SettingsViewProps {
   userProgressList: UserWordProgress[];
@@ -25,6 +28,10 @@ interface SettingsViewProps {
   onSetThemeMode: (mode: 'light' | 'dark' | 'system') => void;
   onImportJson: (jsonStr: string) => boolean;
   onImportCsv: (csvStr: string) => boolean;
+  onImportWordContent: (
+    content: string,
+    fileType: 'csv' | 'json'
+  ) => Promise<{ success: boolean; count: number; errors: string[] }>;
   onFactoryReset: () => Promise<void>;
   deferredPrompt?: any;
   onInstallPwa?: () => void;
@@ -37,6 +44,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onSetThemeMode,
   onImportJson,
   onImportCsv,
+  onImportWordContent,
   onFactoryReset,
   deferredPrompt,
   onInstallPwa,
@@ -45,8 +53,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [showResetConfirmModal, setShowResetConfirmModal] = useState<boolean>(false);
   const [isResetting, setIsResetting] = useState<boolean>(false);
   const [dragActive, setDragActive] = useState<boolean>(false);
+  const [wordDragActive, setWordDragActive] = useState<boolean>(false);
+  const [isImportingWords, setIsImportingWords] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const wordFileInputRef = useRef<HTMLInputElement>(null);
 
   const showToast = (type: 'success' | 'error', text: string) => {
     setToastMessage({ type, text });
@@ -157,6 +168,122 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     };
 
     reader.readAsText(file);
+  };
+
+  // ---- Word Content Import Template (word/definition/partOfSpeech/etc.) ----
+
+  const wordTemplateSampleRows = [
+    {
+      word: 'resilient',
+      definition: 'Able to withstand or recover quickly from difficult conditions.',
+      partOfSpeech: 'adjective',
+      cefrLevel: 'B2',
+      exampleSentence: 'She showed a remarkably resilient spirit after the setback.',
+      synonym: 'adaptable; tough; tenacious',
+      antonym: 'fragile; vulnerable',
+      category: 'Personality',
+      difficulty: 'Medium',
+      laoTranslation: 'ທົນທານ',
+      thaiTranslation: 'ยืดหยุ่น',
+    },
+    {
+      word: 'empathy',
+      definition: 'The capacity to understand and share the feelings of another.',
+      partOfSpeech: 'noun',
+      cefrLevel: 'B2',
+      exampleSentence: 'Showing empathy towards teammates fosters trust.',
+      synonym: 'compassion; understanding',
+      antonym: 'apathy; indifference',
+      category: 'Emotions',
+      difficulty: 'Medium',
+      laoTranslation: 'ຄວາມເຫັນອົກເຫັນໃຈ',
+      thaiTranslation: 'ความเห็นอกเห็นใจ',
+    },
+  ];
+
+  const handleDownloadCsvTemplate = () => {
+    const headerRow = WORD_TEMPLATE_HEADERS.join(',');
+    const dataRows = wordTemplateSampleRows.map((row) =>
+      WORD_TEMPLATE_HEADERS.map((h) => `"${String((row as any)[h] ?? '').replace(/"/g, '""')}"`).join(',')
+    );
+    const csv = [headerRow, ...dataRows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'mydictionary101_word_import_template.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadJsonTemplate = () => {
+    const jsonStr = JSON.stringify({ words: wordTemplateSampleRows }, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'mydictionary101_word_import_template.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleWordContentFileChange = (file: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const content = e.target?.result as string;
+      if (!content) {
+        showToast('error', 'The uploaded file is empty.');
+        return;
+      }
+      const fileType: 'csv' | 'json' | null = file.name.endsWith('.csv')
+        ? 'csv'
+        : file.name.endsWith('.json')
+        ? 'json'
+        : null;
+      if (!fileType) {
+        showToast('error', 'Unsupported file type. Please upload a .csv or .json word template file.');
+        return;
+      }
+
+      setIsImportingWords(true);
+      try {
+        const result = await onImportWordContent(content, fileType);
+        if (result.success) {
+          const errSuffix = result.errors.length ? ` (${result.errors.length} row(s) skipped)` : '';
+          showToast('success', `Imported ${result.count} word(s) from the template${errSuffix}.`);
+        } else {
+          showToast('error', result.errors[0] || 'Import failed. Please check the template format.');
+        }
+      } finally {
+        setIsImportingWords(false);
+      }
+    };
+    reader.onerror = () => showToast('error', 'Error reading uploaded file.');
+    reader.readAsText(file);
+  };
+
+  const handleWordDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWordDragActive(true);
+  };
+  const handleWordDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWordDragActive(false);
+  };
+  const handleWordDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWordDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleWordContentFileChange(e.dataTransfer.files[0]);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -488,6 +615,110 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <span className="text-[10px] text-slate-400">
                 Supports MyDictionary101 JSON & CSV spreadsheet files
               </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 2B: Word Content Import Template (full vocabulary entries) */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+        <div className="flex items-center space-x-3 border-b border-slate-200 dark:border-slate-700/60 pb-4">
+          <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <Library className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="font-bold text-lg text-slate-900 dark:text-white">
+              Word Content Import Template
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Bulk-add new vocabulary entries (word, definition, part of speech, CEFR level, example,
+              synonym, antonym, category, difficulty, Lao & Thai translation) via CSV or JSON.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Template Download */}
+          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+              <Table className="w-4 h-4" />
+              <span>1. Download the Template</span>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Columns: word, definition, partOfSpeech, cefrLevel, exampleSentence, synonym, antonym,
+              category, difficulty, laoTranslation, thaiTranslation. Separate multiple synonyms/antonyms
+              with a semicolon (;).
+            </p>
+            <div className="space-y-3 pt-2">
+              <button
+                onClick={handleDownloadCsvTemplate}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md active:scale-[0.98]"
+              >
+                <div className="flex items-center space-x-2">
+                  <FileSpreadsheet className="w-4 h-4" />
+                  <span>Download CSV Template</span>
+                </div>
+                <Download className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleDownloadJsonTemplate}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
+              >
+                <div className="flex items-center space-x-2">
+                  <FileJson className="w-4 h-4 text-indigo-500" />
+                  <span>Download JSON Template</span>
+                </div>
+                <Download className="w-4 h-4 text-slate-400" />
+              </button>
+            </div>
+          </div>
+
+          {/* Word Content Upload */}
+          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
+              <Upload className="w-4 h-4" />
+              <span>2. Upload Filled-in Template</span>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              New words are added to your local dictionary and immediately available for search & practice cards.
+            </p>
+
+            <input
+              type="file"
+              ref={wordFileInputRef}
+              accept=".json,.csv"
+              className="hidden"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleWordContentFileChange(e.target.files[0]);
+                }
+              }}
+            />
+
+            <div
+              onDragOver={handleWordDragOver}
+              onDragLeave={handleWordDragLeave}
+              onDrop={handleWordDrop}
+              onClick={() => wordFileInputRef.current?.click()}
+              className={`p-6 rounded-2xl border-2 border-dashed text-center cursor-pointer transition-all flex flex-col items-center justify-center space-y-2 ${
+                wordDragActive
+                  ? 'border-emerald-500 bg-emerald-500/10'
+                  : 'border-slate-300 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-500 bg-white dark:bg-[#1E293B]'
+              }`}
+            >
+              {isImportingWords ? (
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Importing words…</span>
+              ) : (
+                <>
+                  <Library className="w-7 h-7 text-emerald-500 mb-1" />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
+                    Click or drag & drop filled template (.csv, .json)
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    Uses the Word Content Import Template columns above
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -273,14 +273,38 @@ export const PracticeSection: React.FC<PracticeSectionProps> = ({
                 </button>
               </div>
             ) : (
-              /* Back of Card: Definitions & Translations */
+              /* Back of Card: Phonetic, Part of Speech, Definition, Synonym, Antonym & Thai Translation */
               <div className="text-center space-y-4 max-w-lg">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 uppercase tracking-widest">
-                  {currentWordEntry?.meanings[0]?.partOfSpeech || 'definition'}
-                </span>
+                <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white capitalize">
+                  {currentProgress.word}
+                </h3>
+
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {currentWordEntry?.phonetic && (
+                    <span className="px-2.5 py-1 rounded-lg text-xs font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border border-indigo-500/30">
+                      {currentWordEntry.phonetic}
+                    </span>
+                  )}
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 uppercase tracking-widest">
+                    {currentWordEntry?.meanings[0]?.partOfSpeech || 'definition'}
+                  </span>
+                </div>
+
                 <p className="text-lg font-medium text-slate-800 dark:text-slate-200">
                   {currentWordEntry?.meanings[0]?.definitions[0]?.definition || `Definition for ${currentProgress.word}`}
                 </p>
+
+                {(currentWordEntry?.synonyms?.length ?? 0) > 0 && (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                    ✅ Synonyms: {currentWordEntry!.synonyms.slice(0, 5).join(', ')}
+                  </div>
+                )}
+
+                {(currentWordEntry?.antonyms?.length ?? 0) > 0 && (
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs font-bold text-rose-700 dark:text-rose-300">
+                    ❌ Antonyms: {currentWordEntry!.antonyms.slice(0, 5).join(', ')}
+                  </div>
+                )}
 
                 {currentWordEntry?.translations?.thai?.translation && (
                   <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-800 dark:text-amber-300">
