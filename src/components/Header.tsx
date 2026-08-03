@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('search')}>
             <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/20 border border-indigo-500/30">
               <img
-                src="/favicon.svg"
+                src={`${import.meta.env.BASE_URL}favicon.svg`}
                 alt="MyDictionary101 Logo"
                 className="w-full h-full object-cover p-1 bg-indigo-900"
               />
