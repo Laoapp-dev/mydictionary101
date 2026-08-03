@@ -1,0 +1,6 @@
+{
+  "name": "MyDictionary101 - English Dictionary & Vocabulary Builder",
+  "description": "Comprehensive English dictionary with synonyms, phonetics, Thai & Lao translation, offline downloads, practice exercises, progress tracking, and cross-device cloud sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

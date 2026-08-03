@@ -1,0 +1,54 @@
+{
+  "id": "mydictionary101-pwa",
+  "short_name": "MyDict101",
+  "name": "MyDictionary101 - Smart Multilingual Dictionary",
+  "description": "Smart Multilingual Dictionary, Vocabulary Tracker & Practice Exercises for Thai and English learners.",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["education", "books", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Search Vocabulary",
+      "short_name": "Search",
+      "description": "Quickly search words, definitions, and translations",
+      "url": "./?tab=search",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Practice Exercises",
+      "short_name": "Practice",
+      "description": "Flashcards and practice exercises",
+      "url": "./?tab=practice",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

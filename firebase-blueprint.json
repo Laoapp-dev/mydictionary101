@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "UserProgress": {
+      "title": "User Word Progress",
+      "description": "Tracks vocabulary mastery levels and review statistics for each user.",
+      "type": "object",
+      "properties": {
+        "word": { "type": "string", "maxLength": 100 },
+        "masteryScore": { "type": "number" },
+        "masteryLevel": { "type": "string", "enum": ["Learning", "Reviewing", "Mastered"] },
+        "reviewCount": { "type": "number" },
+        "correctCount": { "type": "number" },
+        "incorrectCount": { "type": "number" },
+        "lastReviewed": { "type": "string" },
+        "nextReviewDate": { "type": "string" },
+        "tags": { "type": "array" },
+        "isBookmarked": { "type": "boolean" },
+        "addedAt": { "type": "string" }
+      },
+      "required": ["word", "masteryScore", "masteryLevel"]
+    },
+    "UserStats": {
+      "title": "User Study Statistics",
+      "description": "Aggregated user statistics and streak counts.",
+      "type": "object",
+      "properties": {
+        "totalSearched": { "type": "number" },
+        "totalSaved": { "type": "number" },
+        "masteredCount": { "type": "number" },
+        "learningCount": { "type": "number" },
+        "reviewingCount": { "type": "number" },
+        "streakDays": { "type": "number" },
+        "lastActiveDate": { "type": "string" },
+        "practiceAccuracy": { "type": "number" },
+        "totalExercisesCompleted": { "type": "number" }
+      },
+      "required": ["streakDays", "totalSaved"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/progress/{wordId}": {
+      "schema": { "$ref": "#/entities/UserProgress" },
+      "description": "User saved vocabulary progress"
+    },
+    "/users/{userId}/stats/{docId}": {
+      "schema": { "$ref": "#/entities/UserStats" },
+      "description": "User aggregate study stats"
+    }
+  }
+}
